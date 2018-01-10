@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-
+// import uniqueValidator from "mongoose-unique-validator";
 const { Schema } = mongoose;
 
 // To fix https://github.com/Automattic/mongoose/issues/4291
@@ -10,15 +10,23 @@ const userSchema = new Schema({
     type: String,
     required: true
   },
+  email: {
+    type: String,
+    required: true
+  },
   password: {
     type: String,
     required: true
   },
-  token: String,
+  phone: {
+    type: String
+  },
   updated: {
     type: Date,
     default: Date.now
   }
 });
 
-export default mongoose.model('User', citySchema);
+// userSchema.plugin(uniqueValidator);
+
+export default mongoose.model('User', userSchema);

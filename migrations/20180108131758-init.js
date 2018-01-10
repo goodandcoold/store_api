@@ -15,15 +15,15 @@ exports.setup = function(options, seedLink) {
 };
 
 exports.up = function(db, callback) {
-   db.createCollection('user', callback);
-   db.createCollection('product', callback);
+   db.createCollection('users', callback);
+   db.createCollection('products', callback);
 
    return true;
 };
 
 exports.down = function(db, callback) {
-  db.dropCollection('user', callback);
-  db.dropCollection('product', callback);
+  db.dropCollection('users', callback);
+  db.dropCollection('products', callback);
 };
 
 exports._meta = {

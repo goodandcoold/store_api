@@ -6,14 +6,16 @@ import routes from '../src/modules/v1.1/routes/routes';
 import Koa from  "Koa";
 import Bootstrap from '../src/modules/v1.1/bootstrap';
 import * as fs from 'fs';
+import jwt from 'koa-jwt';
 
 const {readFile, writeFile, readFileSync} = fs.default;
 
 
 export default class Config {
-  constructor (env, version) {
+  constructor (env, version, secret) {
     this.env = env;
     this.version = version;
+    this.secret = secret;
   }
 
   getConfigForVersion() {
@@ -22,8 +24,8 @@ export default class Config {
 
   get config () {
     const {driver, host, database} = JSON.parse(readFileSync('database.json', 'utf8'))[this.env];
-    const router = new Router({prefix: `/api/${this.version}`});
-
+    // const router = new Router({prefix: `/api/${this.version}`});
+    const secret = this.secret;
     return {
       "v1.1" : {
         app : new Koa(),
@@ -34,7 +36,7 @@ export default class Config {
                 cdn: `${driver}://${host}/${database}`
             }
         },
-        routing: { router, routes },
+        routing: { router : Router, routes, secret, jwt },
         bodyParser: bodyParser
       }
     };

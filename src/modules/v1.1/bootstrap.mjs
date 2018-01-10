@@ -1,3 +1,4 @@
+
 export default class Bootstrap {
   constructor(config) {
     this.app = config.app;
@@ -35,28 +36,41 @@ export default class Bootstrap {
 
   setRouting(routing) {
     if (routing) {
-      this.app.use(
-        routing.router.routes(),
-        routing.router.allowedMethods()
-      );
+      const jwt = routing.jwt({
+        secret: routing.secret
+      });
 
       this.app.use(async (ctx, next) => {
         try {
           await next();
         } catch (err) {
           ctx.status = err.status || 500;
-          ctx.type = contentType;
+          ctx.type = 'application/json';
           ctx.body = err;
           ctx.app.emit('error', err, ctx);
         }
       });
 
-      routing.routes.map(route => this.setRoute(routing.router, route));
-    }
-  }
+      routing.routes.forEach(route => {
+        let {prefix, endpoints} = route,
+            router = new routing.router ({prefix});
 
-  setRoute(router, route) {
-      router[route.verb](route.path, route.action);
+            endpoints.forEach(endpoint => {
+              let {verb, path, action, access = false} = endpoint;
+              if (access) {
+                router[verb](path, action);
+              } else {
+                router[verb](path, jwt, action);
+              }
+
+            })
+
+            this.app.use(
+              router.routes(),
+              router.allowedMethods()
+            );
+      });
+    }
   }
 
   setBodyParser(bodyParser) {
