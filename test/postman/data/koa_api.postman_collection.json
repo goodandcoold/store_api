@@ -694,18 +694,18 @@
 			"response": []
 		},
 		{
-			"name": "13 userList.valid.eugene",
+			"name": "10 me.valid.update",
 			"event": [
 				{
 					"listen": "test",
 					"script": {
-						"id": "9a47718c-cf85-4d9a-824e-f488e0435468",
+						"id": "b0608966-36a8-4a7d-a5d4-d4fafdde3585",
 						"type": "text/javascript",
 						"exec": [
 							"const EXPECTED = {",
 							"    \"name\": \"Alex\",",
-							"    \"email\": \"eugene.orishko@gmail.com\",",
-							"    \"phone\" : \"\"",
+							"    \"email\": \"oleksandr.hudenko@gmail.com\",",
+							"    \"phone\": \"+380502612185\"",
 							"};",
 							"",
 							"pm.test(\"Status code is 200\", function () {",
@@ -713,6 +713,199 @@
 							"});",
 							"",
 							"pm.test(\"Return valid and actual user data\", function () {",
+							"    let fact = pm.response.json();",
+							"    EXPECTED.id = fact.id;",
+							"    pm.expect(fact).to.be.deep.equal(EXPECTED);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\" : \"Alex\",\n\t\"email\" : \"oleksandr.hudenko@gmail.com\",\n\t\"current_password\" : \"12345\",\n\t\"new_password\" : \"123456\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/me",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"me"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "10 me.valid.updateBack",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "b0608966-36a8-4a7d-a5d4-d4fafdde3585",
+						"type": "text/javascript",
+						"exec": [
+							"const EXPECTED = {",
+							"    \"name\": \"Alex\",",
+							"    \"email\": \"oleksandr.hudenko@gmail.com\",",
+							"    \"phone\": \"+380502612185\"",
+							"};",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Return valid and actual user data\", function () {",
+							"    let fact = pm.response.json();",
+							"    EXPECTED.id = fact.id;",
+							"    pm.expect(fact).to.be.deep.equal(EXPECTED);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\" : \"Alex\",\n\t\"email\" : \"oleksandr.hudenko@gmail.com\",\n\t\"current_password\" : \"123456\",\n\t\"new_password\" : \"12345\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/me",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"me"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "10 me.invalid",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "1320abb9-ec1c-416b-9d26-6b59afc22544",
+						"type": "text/javascript",
+						"exec": [
+							"const EXPECTED = {",
+							"    field: \"current_password\",",
+							"    message: \"Wrong current password\"",
+							"};",
+							"",
+							"pm.test(\"Status code is 422\", function () {",
+							"    pm.response.to.have.status(422);",
+							"});",
+							"",
+							"pm.test(\"Got valid error message\", function () {",
+							"    const { field, message } = pm.response.json();",
+							"    ",
+							"    pm.expect(field).to.equal(EXPECTED.field);",
+							"    pm.expect(message).to.equal(EXPECTED.message);",
+							"});"
+						]
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{currentToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\" : \"Alex\",\n\t\"email\" : \"oleksandr.hudenko@gmail.com\",\n\t\"current_password\" : \"123456\",\n\t\"new_password\" : \"12345\"\n}"
+				},
+				"url": {
+					"raw": "{{url}}/api/me",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"api",
+						"me"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "13 userList.valid.eugene",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6905f350-8c90-4cd3-a98f-83b891c9410e",
+						"type": "text/javascript",
+						"exec": [
+							"",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Return valid and actual user data\", function () {",
+							"    const EXPECTED = {",
+							"        \"name\": \"Eugene\",",
+							"        \"email\": \"eugene.orishko@gmail.com\",",
+							"        \"phone\" : \"\"",
+							"    };",
 							"    let fact = pm.response.json()[0];",
 							"    EXPECTED.id = fact.id;",
 							"    pm.expect(fact).to.be.deep.equal(EXPECTED);",
@@ -775,20 +968,21 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "02a53aa8-0310-4026-9e68-8cd0490b36d7",
+						"id": "2bd3698c-8c1c-4268-a3f0-64ac0780bf3b",
 						"type": "text/javascript",
 						"exec": [
-							"const EXPECTED = {",
-							"    \"name\": \"Alex\",",
-							"    \"email\": \"oleksandr.hudenko@gmail.com\",",
-							"    \"phone\": \"+380502612185\"",
-							"};",
+							"",
 							"",
 							"pm.test(\"Status code is 200\", function () {",
 							"    pm.response.to.have.status(200);",
 							"});",
 							"",
 							"pm.test(\"Return valid and actual user data\", function () {",
+							"    const EXPECTED = {",
+							"        \"name\": \"Alex\",",
+							"        \"email\": \"oleksandr.hudenko@gmail.com\",",
+							"        \"phone\": \"+380502612185\"",
+							"    };",
 							"    let fact = pm.response.json()[0];",
 							"    EXPECTED.id = fact.id;",
 							"    pm.expect(fact).to.be.deep.equal(EXPECTED);",
@@ -820,7 +1014,7 @@
 					"raw": "{\n\t\"name\" : \"Alex\",\n\t\"email\" : \"oleksandr.hudenko@gmail.com\",\n\t\"password\" : \"12345\"\n}"
 				},
 				"url": {
-					"raw": "{{url}}/api/user?name=Eugene&email=eugene.orishko@gmail.com",
+					"raw": "{{url}}/api/user?name=Alex&email=oleksandr.hudenko@gmail.com",
 					"host": [
 						"{{url}}"
 					],
@@ -831,12 +1025,12 @@
 					"query": [
 						{
 							"key": "name",
-							"value": "Eugene",
+							"value": "Alex",
 							"equals": true
 						},
 						{
 							"key": "email",
-							"value": "eugene.orishko@gmail.com",
+							"value": "oleksandr.hudenko@gmail.com",
 							"equals": true
 						}
 					]
