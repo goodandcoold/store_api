@@ -29,7 +29,7 @@ class AuthController {
   async login(ctx) {
    try {
      const { email, password } = ctx.request.body;
-     const user = await User.findOne({ email, password });
+     const user = await User.login({ email, password });
      if (!user)
        throw new BaseError(422, "", {
          field: 'password', message: 'Wrong email or password'
@@ -60,7 +60,7 @@ class AuthController {
 
   async update(ctx) {
    try {
-     const user = await User.findByIdAndUpdate(
+     const user = await User.updateUser(
        ctx.state.user.id, ctx.request.body
      );
 
