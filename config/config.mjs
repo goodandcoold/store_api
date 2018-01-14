@@ -36,7 +36,7 @@ export default class Config {
                 cdn: `${driver}://${host}/${database}`
             }
         },
-        routing: { router : Router, routes, secret, jwt },
+        routing: { routerClass : Router, routes, secret, jwt },
         bodyParser: bodyParser
       }
     };

@@ -27,7 +27,7 @@ class UserController {
   }
 
   async find(ctx) {
-    ctx.body = await User.find();
+    ctx.body = await User.find(ctx.query);
   }
 
   async delete(ctx) {

@@ -1,81 +1,79 @@
 import User from '../models/user';
-import jwt from 'jsonwebtoken';
 import * as dotenv from "dotenv";
+import BaseError from "../../../core/models/baseError";
+import BaseController from "../../../core/controllers/baseController";
 
 const {SECRET} = dotenv.default.config().parsed;
 
-
 class AuthController {
 
-
-  async register(ctx) {
+ async register(ctx) {
    try {
-     const user = await new User(ctx.request.body).save();
-     ctx.status = 201;
+     const user = await new User(ctx.request.body)
+       .save()
+       .catch(err => {
+        let errorJson = (err.name == 'MongoError')
+          ? {field: "email", message: "Email must be unique"}
+          : BaseController.generateJsonError(err.errors);
+
+         throw new BaseError(422, "", errorJson);
+       });
+
+       ctx.status = 201;
+       ctx.body = { token: BaseController.generateToken(user, 'user', SECRET) };
+   } catch (err) {
+     BaseController.handleError(ctx, err)
+   }
+  }
+
+  async login(ctx) {
+   try {
+     const { email, password } = ctx.request.body;
+     const user = await User.findOne({ email, password });
+     if (!user)
+       throw new BaseError(422, "", {
+         field: 'password', message: 'Wrong email or password'
+       });
+
+     ctx.status = 200;
+     ctx.body = { token: BaseController.generateToken(user, 'user', SECRET) };
+   } catch (err) {
+       BaseController.handleError(ctx, err);
+   }
+  }
+
+  async me(ctx) {
+   try {
+     let { id = null } = ctx.state.user;
+
+     if (!id) throw new BaseError(401);
+
+     const user = await User.findById(id);
+
+     if (!user)
+        throw new BaseError(500, "User not found");
+
      ctx.body = user;
    } catch (err) {
-     ctx.throw(422);
+     BaseController.handleError(ctx, err);
    }
- }
+  }
 
- async login(ctx) {
-   try {
-     const user = await User.find({password : ctx.request.body.password})
-     if (user) {
-       ctx.status = 200;
-       ctx.body = {
-         token: jwt.sign(
-           {
-             role: 'admin'
-           },
-           SECRET
-         ), // Store this key in an environment variable
-         message: 'Successful Authentication'
-       };
-     } else {
-       ctx.status = 401;
-       ctx.body = {
-         message: 'Authentication Failed'
-       };
-     }
-   } catch (err) {
-     if (err.name === 'CastError' || err.name === 'NotFoundError') {
-       ctx.throw(404);
-     }
-     ctx.throw(500);
-   }
- }
-
- async me(ctx) {
-   try {
-     const user = await new Promise ((resolve) => {
-       resolve({"name" : "Alex"});
-     });
-
-     ctx.body = user;
-
-   }catch (err) {
-
-   }
- }
-
- async update(ctx) {
+  async update(ctx) {
    try {
      const user = await User.findByIdAndUpdate(
-       ctx.params.id,
-       ctx.request.body
+       ctx.state.user.id, ctx.request.body
      );
-     if (!user) {
-       ctx.throw(404);
-     }
+
+     if (!user) ctx.throw(404);
+
      ctx.body = user;
    } catch (err) {
-     if (err.name === 'CastError' || err.name === 'NotFoundError') {
-       ctx.throw(404);
-     }
-     ctx.throw(500);
+     BaseController.handleError(ctx, err);
    }
- }
+  }
+
+
 }
 
 
