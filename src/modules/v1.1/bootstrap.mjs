@@ -14,6 +14,18 @@ export default class Bootstrap {
       db = null
     } = this.config;
 
+    this.config.app.use(async (ctx, next) => {
+      try {
+        await next();
+      } catch (err) {
+        ctx.status = err.statusCode || err.status || 500;
+        ctx.body = err.message || "";
+        if (err.status == 401) {
+          ctx.body = "";
+        }
+      }
+    });
+
     this.setDbConnections(db);
     this.setBodyParser(bodyParser);
     this.setRouting(routing);

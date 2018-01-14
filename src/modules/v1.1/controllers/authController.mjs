@@ -50,10 +50,9 @@ class AuthController {
 
      const user = await User.findById(id);
 
-     if (!user)
-        throw new BaseError(500, "User not found");
+     if (!user) throw new BaseError(422);
 
-     ctx.body = user;
+     ctx.body = User.getPublicProps(user);
    } catch (err) {
      BaseController.handleError(ctx, err);
    }
@@ -65,14 +64,13 @@ class AuthController {
        ctx.state.user.id, ctx.request.body
      );
 
-     if (!user) ctx.throw(404);
+     if (!user) throw new BaseError(422);
 
      ctx.body = user;
    } catch (err) {
      BaseController.handleError(ctx, err);
    }
   }
-
 
 }
 
