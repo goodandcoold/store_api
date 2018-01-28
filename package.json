@@ -1,7 +1,7 @@
 {
   "name": "koa_api",
   "version": "1.0.0",
-  "description": "",
+  "description": "Koa api using docker",
   "main": "server.js",
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
@@ -20,7 +20,9 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node --experimental-modules server.mjs"
+    "start": "node --experimental-modules server.mjs",
+    "migrate": "node node_modules/.bin/db-migrate up",
+    "migrate:down": "node node_modules/bin/db-migrate down"
   },
   "author": "Alex Gudenko",
   "license": "ISC"

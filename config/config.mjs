@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import Router from "koa-router";
 import bodyParser from "koa-bodyparser";
 import routes from '../src/modules/v1.1/routes/routes';
-import Koa from  "Koa";
+import Koa from  "koa";
 import Bootstrap from '../src/modules/v1.1/bootstrap';
 import * as fs from 'fs';
 import jwt from 'koa-jwt';

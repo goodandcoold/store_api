@@ -2,7 +2,7 @@
   "dev": {
     "driver": "mongodb",
     "database": "store_api_dev",
-    "host": "localhost"
+    "host": "mongodb"
   },
 
   "test": {
